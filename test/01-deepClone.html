@@ -1,0 +1,63 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>深拷贝</title>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+  <!--
+        基本数据类型：number，string，boolean，null，undefined，symbol以及未来ES10新增的BigInt(任意精度整数)七类 (名和值存储在栈内存中)
+        引用数据类型(Object类)：{}、[]、函数 (名和地址存储在栈内存中，引用对象的值存储在堆内存中，多个地址指向同一个值)
+    -->
+  <script>
+    // 深拷贝1：递归复制所有层级属性
+    function deepClone1(obj) {
+      let objClone = Array.isArray(obj) ? [] : {}
+      if (obj && typeof obj === 'object') {
+        for (key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            //判断ojb子元素是否为对象，如果是，递归复制
+            if (obj[key] && typeof obj[key] === 'object') {
+              objClone[key] = deepClone1(obj[key])
+            } else {
+              //如果不是，简单复制
+              objClone[key] = obj[key]
+            }
+          }
+        }
+      }
+      return objClone
+    }
+    let a = [1, 2, [3, 5], 4]
+    let b = deepClone1(a)
+    let c = a.slice() // 浅拷贝
+    a[0] = 2
+    a[2][0] = 6
+    console.log(a)
+    console.log(b)
+    console.log(c)
+    console.log('-----------------')
+
+    // 深拷贝2：借用JSON对象的parse和stringify
+    function deepClone2(obj) {
+      let _obj = JSON.stringify(obj)
+      let objClone = JSON.parse(_obj)
+      return objClone
+    }
+    let d = deepClone2(a)
+    a[0] = 3
+    a[2][0] = 9
+    console.log(d)
+    console.log('-----------------')
+
+    // 深拷贝3：借用JQ的extend方法
+    let e = $.extend(true, [], a)
+    a[0] = 4
+    a[2][0] = 12
+    console.log(e)
+  </script>
+</body>
+
+</html>
