@@ -1,0 +1,67 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>for循环里的异步操作</title>
+</head>
+
+<body>
+  <script>
+    // 递归
+    function showTime(count) {
+      console.log("count is : ", count);
+      if (count == 0) {
+        console.log("All is Done!");
+      } else {
+        count -= 1;
+        setTimeout(function () {
+          showTime(count);
+        }, 10);
+      }
+    }
+    showTime(20);
+
+    // 自执行函数
+    function test() {
+      for (var i = 0; i < 5; ++i) {
+        (function (i) {
+          setTimeout(function () {
+            console.log("index is :", i);
+          }, 1000)
+        })(i)
+      }
+    }
+    test();
+
+    // let 声明
+    function test() {
+      for (let i = 0; i < 5; ++i) {
+        setTimeout(function () {
+          console.log("index is :", i);
+        }, 1000)
+      }
+    }
+    test();
+
+    // async await实现，await后必须接一个Promise
+    var asyncFunc = function (arr, i) {
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          arr.push(i);
+          console.log("index is : ", i);
+          resolve();
+        }, 1000);
+      });
+    }
+    var box5 = async function () {
+      var arr = [];
+      for (var i = 0; i < 5; i++) {
+        await asyncFunc(arr, i);
+      }
+      console.log(arr);
+    }
+    box5();
+  </script>
+</body>
+
+</html>

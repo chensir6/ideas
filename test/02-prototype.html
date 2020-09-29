@@ -27,28 +27,95 @@
     即在其构造函数 （Object ）的显式原型中去找 toString. 故要在 f._proto_(隐式原型）的._proto_(隐式原型）中找，如图所示，故输出 null
     方框为 构造函数，圆框为 对象，特例：Object.prototype 的 隐式原型是 null （JS避免死循环）
   -->
-  <!-- 
-    闭包
-    闭包就是能够读取其他函数内部变量的函数。由于du在Javascript语言中，只有函数zhi内部的子函数才能读取局部变量dao，
-    因此可以把闭包简单理解成"定义在一个函数内部的函数"。所以，在本质上，闭包就是将函数内部和函数外部连接起来的一座桥梁。
-    闭包包含自由(未绑定到特定对象)变量;这些变量不是在这个代码块内或者任何全局上下文中定义的，而是在定义代码块的环境中定义(局部变量)。
-    扩展资料：
-    "闭包" 一词来源于以下两者的结合:要执行的代码块(由于自由变量被包含在代码块中，
-    这些自由变量以及它们引用的对象没有被释放)和为自由变量提供绑定的计算环境(作用域)。
-    在PHP、Scala、Scheme、Common Lisp、Smalltalk、Groovy、JavaScript、Ruby、 Python、Go、Lua、objective c、swift
-    以及Java(Java8及以上)等语言中都能找到对闭包不同程度的支持。
-    要理解闭包，首先必须理解duJavascript特殊的变量作用域。变量的作用域无非就是zhi两种：dao全局变量和局部变量。
-    Javascript语言的特殊之处，就在于函数内部可以直接读取全局变量。从定义上来看，所有的函数都可以是闭包。
-    当一个函数在调用时，引用了不是自己作用域内定义的变量（通常称其为自由变量），则形成了闭包；闭包是代码块和创建该代码块的上下文中数据的结合。
-    2
-    当一个内部函数被调用，就会形成闭包，闭包就是能够读取其他函数内部变量的函数，定义在一个函数内部的函，创建一个闭包环境，
-    让返回的这个子程序抓住i，以便在后续执行时可以保持对这个i的引用。内部函数比外部函数有更长的生命周期；函数可以访问它被创建时所处的上下文环境。
-  -->
   <div>
     <img src="img/原型链.png" alt="原型链">
   </div>
-  <script>
 
+  <script>
+    // 使用var关键字声明的全局作用域变量属于window对象。而let不属于window对象
+    // 使用var关键字声明的变量在任何地方都可以修改。
+    // 在相同的作用域或块级作用域中，不能使用let和const关键字来重置var、let和const关键字声明的变量。。
+    // let和const关键字在不同作用域，或不同块级作用域中是可以重新声明赋值的。
+    // var关键字定义的变量可以先使用后声明。let无变量提升
+    // const关键字定义的常量，声明时必须进行初始化，且初始化后不可再修改。
+    // const 的本质: const 定义的变量并非常量，并非不可变，它定义了一个常量引用一个值。
+    // 使用 const 定义的对象或者数组，其实是可变的。但是我们不能对常量对象重新赋值
+
+    // 1、在对象方法中， this 指向调用它所在方法的对象。
+    // 2、单独使用 this，它指向全局(Global)对象。
+    // 3、函数使用中，this 指向函数的所属者。
+    // 4、严格模式下函数是没有绑定到 this 上，这时候 this 是 undefined。
+    // 5、在 HTML 事件句柄中，this 指向了接收事件的 HTML 元素。
+    // 6、apply 和 call 允许切换函数执行的上下文环境（context），即 this 绑定的对象，可以将 this 引用到任何对象。
+    "use strict";
+    function myFunction() {
+      return this;
+    }
+    // 显式函数绑定
+    // 在 JavaScript 中函数也是对象，对象则有方法，apply 和 call 就是函数对象的方法。这两个方法异常强大，他们允许切换函数执行的上下文环境（context），即 this 绑定的对象。
+    // 在下面实例中，当我们使用 person2 作为参数来调用 person1.fullName 方法时, this 将指向 person2, 即便它是 person1 的方法：
+    var person1 = {
+      fullName: function() {
+        return this.firstName + " " + this.lastName;
+      }
+    }
+    var person2 = {
+      firstName:"John",
+      lastName: "Doe",
+    }
+    person1.fullName.call(person2);  // 返回 "John Doe"
+  </script>
+
+  <script>
+    console.log(Number(['0']), Number([null]), Number(undefined))
+    console.log(null == undefined, [null] == '', [] == '')
+    console.log([null] == '0', [null] == [], [null] == [0], [null] == [''], [null] == ['0'])
+    console.log([] == [''], [] == [], {} == {}, null == {}, null == 0)
+    console.log(5 + '5', '5' + 5)
+  </script>
+  
+  <script>
+    // prototype继承
+    // 所有的 JavaScript 对象都会从一个 prototype（原型对象）中继承属性和方法：
+    // Date 对象从 Date.prototype 继承。
+    // Array 对象从 Array.prototype 继承。
+    // Person 对象从 Person.prototype 继承。
+    // 所有 JavaScript 中的对象都是位于原型链顶端的 Object 的实例。
+    // JavaScript 对象有一个指向一个原型对象的链。当试图访问一个对象的属性时，它不仅仅在该对象上搜寻，还会搜寻该对象的原型，
+    // 以及该对象的原型的原型，依次层层向上搜索，直到找到一个名字匹配的属性或到达原型链的末尾。
+    // Date 对象, Array 对象, 以及 Person 对象从 Object.prototype 继承。
+    function Person(id, name) {
+      this.id = id
+      this.name = name
+    }
+    var p1 = new Person(1, 'zhangsan', 30)
+    Person.prototype.age = 20
+    console.log(p1.__proto__)
+    console.log(p1.constructor)
+    console.log(Person.prototype === p1.__proto__)
+    console.log(Object.prototype.__proto__ === null)
+    console.log(p1)
+    console.log(Person)
+
+    // 闭包：闭包是一种保护私有变量的机制，在函数执行时形成私有的作用域，保护里面的私有变量不受外界干扰。
+    // 直观的说就是形成一个不销毁的栈环境。
+    // 闭包实例
+    var add = (function () {
+      var counter = 0
+      return function () {
+        console.log(counter)
+        return counter += 1
+      }
+    })()
+    add()
+    add()
+    add()
+    // 实例解析
+    // 变量 add 指定了函数自我调用的返回字值。
+    // 自我调用函数只执行一次。设置计数器为 0。并返回函数表达式。
+    // add变量可以作为一个函数使用。非常棒的部分是它可以访问函数上一层作用域的计数器。
+    // 这个叫作 JavaScript 闭包。它使得函数拥有私有变量变成可能。
+    // 计数器受匿名函数的作用域保护，只能通过 add 方法修改。
   </script>
 </body>
 
